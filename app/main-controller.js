@@ -1,7 +1,6 @@
 'use strict';
 
-angular.module('secure-rest-angular-tut').controller('MainCtrl', function ($resource, $scope) {
-	console.log('Oh, hi!');
+angular.module('secure-rest-angular-tut').controller('MainCtrl', function ($resource, $scope, Login) {
 
 	$scope.greetings = {
 		open: {
@@ -10,14 +9,11 @@ angular.module('secure-rest-angular-tut').controller('MainCtrl', function ($reso
 		}
 	};
 
-	/*
-	 var Server = $resource('/rest/v1/document', {}, {
-	 createDocument: {method: 'POST', isArray: false},
-	 getDocument: {method: 'GET', url: '/rest/v1/document/:documentId', cache: false, isArray: false},
-	 modifyDocument: {method: 'PUT', isArray: false},
-	 newAttachment: {method: 'POST', url: '/rest/v1/document/:documentId/attachment', isArray: false}
-	 });
-	 */
+	$scope.login = {
+		username: '',
+		password: ''
+	};
+
 	var openResources = $resource('http://localhost:8081/rest/open', {}, {
 		get: {method: 'GET', cache: false, isArray: false},
 		post: {method: 'POST', isArray: false}
@@ -29,6 +25,18 @@ angular.module('secure-rest-angular-tut').controller('MainCtrl', function ($reso
 		openResources.get().$promise.then(function (response) {
 			console.log('GET /rest/open returned: ', response);
 			$scope.greetings.open.getResult = response.greetings;
+		});
+	};
+
+	$scope.login = function () {
+
+		Login.login($scope.login.username, $scope.login.password, function (data, status, headers, config) {
+			// Success handler
+			console.info('The user has been successfully logged in! ', data, status, headers, config);
+
+		}, function(data, status, headers, config) {
+			// Failure handler
+			console.error('Something went wrong while trying to login... ', data, status, headers, config);
 		});
 	};
 

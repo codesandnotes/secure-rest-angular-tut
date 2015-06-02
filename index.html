@@ -11,18 +11,27 @@
 
 	<body ng-controller="MainCtrl">
 
+		<h3>Login</h3>
+		<input ng-model="login.username" placeholder="username">
+		<input ng-model="login.password" placeholder="password">
+		<button ng-click="login()">Login!</button><button ng-click="logout()">Logout...</button><br/>
+		<br/>
+
+		<hr/>
+
 		<h3>Calling open (non-secured) services</h3>
 		<button ng-click="getOpenGreetings()">Get greetings</button> >>> {{greetings.open.getResult}}<br/>
-		<br/>
 		<input ng-model="greetings.open.postValue"/><button ng-click="postOpenGreetings()">Post greetings</button>
+		<br/>
 
 	    <!-- ANGULAR -->
 	    <script src="js/angular/angular.min.js" type="text/javascript"></script>
 	    <script src="js/angular/angular-cookies.min.js" type="text/javascript"></script>
 	    <script src="js/angular/angular-resource.min.js" type="text/javascript"></script>
-	    <!--<script src="js/angular/angular-route.min.js" type="text/javascript"></script>-->
 
 		<script src="app/main.js" type="application/javascript"></script>
 		<script src="app/main-controller.js" type="application/javascript"></script>
+		<script src="app/cookies-service.js" type="application/javascript"></script>
+		<script src="app/login-service.js" type="application/javascript"></script>
 	</body>
 </html>
