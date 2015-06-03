@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('secure-rest-angular-tut').controller('MainCtrl', function ($resource, $scope, Login) {
+angular.module('secure-rest-angular-tut').controller('MainCtrl', function ($cookies, $location, $resource, $scope, Login) {
 
 	$scope.greetings = {
 		open: {
@@ -29,7 +29,6 @@ angular.module('secure-rest-angular-tut').controller('MainCtrl', function ($reso
 	};
 
 	$scope.login = function () {
-
 		Login.login($scope.login.username, $scope.login.password, function (data, status, headers, config) {
 			// Success handler
 			console.info('The user has been successfully logged in! ', data, status, headers, config);
@@ -37,6 +36,21 @@ angular.module('secure-rest-angular-tut').controller('MainCtrl', function ($reso
 		}, function(data, status, headers, config) {
 			// Failure handler
 			console.error('Something went wrong while trying to login... ', data, status, headers, config);
+		});
+	};
+
+	$scope.logout = function() {
+		Login.logout(function (data, status, headers, config) {
+			// Success handler TODO: if we comment this, we could check if the user correctly logged out on the server
+			$scope.login = {username: '', password: ''};
+			delete $cookies['JSESSIONID'];
+			console.info('The user has been logged out!');
+
+			$location.url('/');
+
+		}, function(data, status, headers, config) {
+			// Failure handler
+			console.error('Something went wrong while trying to logout... ', data, status, headers, config);
 		});
 	};
 
