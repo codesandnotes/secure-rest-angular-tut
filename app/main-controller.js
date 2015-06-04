@@ -66,8 +66,8 @@ angular.module('secure-rest-angular-tut').controller('MainCtrl', function ($cook
 	};
 
 	var secureResources = function (csrfToken) {
+		var headers = $http.defaults.headers.post;
 		if (csrfToken !== undefined) {
-			var headers = $http.defaults.headers.post;
 			headers[$http.defaults.xsrfHeaderName] = csrfToken;
 		}
 
