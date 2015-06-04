@@ -24,6 +24,13 @@
 		<input ng-model="greetings.open.postValue"/><button ng-click="postOpenGreetings()">Post greetings</button>
 		<br/>
 
+		<hr/>
+
+		<h3>Calling secure services</h3>
+		<button ng-click="getSecureGreetings()">Get secure greetings</button> >>> {{greetings.secure.getResult}}<br/>
+		<input ng-model="greetings.secure.postValue"/><button ng-click="postSecureGreetings()">Post secure greetings</button>
+		<br/>
+
 	    <!-- ANGULAR -->
 	    <script src="js/angular/angular.min.js" type="text/javascript"></script>
 	    <script src="js/angular/angular-cookies.min.js" type="text/javascript"></script>

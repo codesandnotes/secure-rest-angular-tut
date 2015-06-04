@@ -7,7 +7,7 @@ angular.module('secure-rest-angular-tut').factory('Login', function ($http, $res
 	});
 
 	var logoutResources = $resource('http://localhost:8081/logout', {}, {
-		options: {method: 'OPTIONS'}
+		options: {method: 'OPTIONS', cache: false}
 	});
 
 	/**
@@ -32,7 +32,7 @@ angular.module('secure-rest-angular-tut').factory('Login', function ($http, $res
 
 				// Extract the CSRF token
 				var csrfToken = Cookies.getFromDocument($http.defaults.xsrfCookieName);
-				console.log('Extracted the CSRF token from the cookie');
+				console.log('Extracted the CSRF token from the cookie', csrfToken);
 
 				// Prepare the headers
 				var headers = {
@@ -70,7 +70,7 @@ angular.module('secure-rest-angular-tut').factory('Login', function ($http, $res
 
 				// Extract the CSRF token
 				var csrfToken = Cookies.getFromDocument($http.defaults.xsrfCookieName);
-				console.log('Extracted the CSRF token from the cookie');
+				console.log('Extracted the CSRF token from the cookie', csrfToken);
 
 				// Prepare the headers
 				var headers = {
