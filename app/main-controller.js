@@ -13,7 +13,7 @@ angular.module('secure-rest-angular-tut').controller('MainCtrl', function ($cook
 		}
 	};
 
-	$scope.login = {
+	$scope.credentials = {
 		username: '',
 		password: ''
 	};
@@ -40,7 +40,7 @@ angular.module('secure-rest-angular-tut').controller('MainCtrl', function ($cook
 	};
 
 	$scope.login = function () {
-		Login.login($scope.login.username, $scope.login.password, function (data, status, headers, config) {
+		Login.login($scope.credentials.username, $scope.credentials.password, function (data, status, headers, config) {
 			// Success handler
 			console.info('The user has been successfully logged in! ', data, status, headers, config);
 
@@ -53,7 +53,7 @@ angular.module('secure-rest-angular-tut').controller('MainCtrl', function ($cook
 	$scope.logout = function() {
 		Login.logout(function (data, status, headers, config) {
 			// Success handler TODO: if we comment this, we could check if the user correctly logged out of the server
-			$scope.login = {username: '', password: ''};
+			$scope.credentials = {username: '', password: ''};
 			delete $cookies['JSESSIONID'];
 			console.info('The user has been logged out!');
 
@@ -65,12 +65,7 @@ angular.module('secure-rest-angular-tut').controller('MainCtrl', function ($cook
 		});
 	};
 
-	var secureResources = function (csrfToken) {
-		var headers = $http.defaults.headers.post;
-		if (csrfToken !== undefined) {
-			headers[$http.defaults.xsrfHeaderName] = csrfToken;
-		}
-
+	var secureResources = function (headers) {
 		return $resource('http://localhost:8081/rest/secure', {}, {
 			get: {method: 'GET', cache: false, headers: headers, isArray: false},
 			options: {method: 'OPTIONS', cache: false},
@@ -88,7 +83,11 @@ angular.module('secure-rest-angular-tut').controller('MainCtrl', function ($cook
 			var csrfToken = Cookies.getFromDocument($http.defaults.xsrfCookieName);
 			console.log('Extracted the CSRF token from the cookie', csrfToken);
 
-			secureResources(csrfToken).get().$promise.then(function (response) {
+			// Add CSRF to headers
+			var headers = $http.defaults.headers.post;
+			headers[$http.defaults.xsrfHeaderName] = csrfToken;
+
+			secureResources(headers).get().$promise.then(function (response) {
 				console.log('GET /rest/secure returned: ', response);
 				$scope.greetings.secure.getResult = response.greetings;
 
@@ -111,7 +110,11 @@ angular.module('secure-rest-angular-tut').controller('MainCtrl', function ($cook
 			var csrfToken = Cookies.getFromDocument($http.defaults.xsrfCookieName);
 			console.log('Extracted the CSRF token from the cookie', csrfToken);
 
-			secureResources(csrfToken).post({greetings: $scope.greetings.secure.postValue}).$promise.then(function (response) {
+			// Add CSRF to headers
+			var headers = $http.defaults.headers.post;
+			headers[$http.defaults.xsrfHeaderName] = csrfToken;
+
+			secureResources(headers).post({greetings: $scope.greetings.secure.postValue}).$promise.then(function (response) {
 				console.log('POST /rest/secure returned: ', response);
 				console.info('You might want to check the server logs to see that the POST has been handled!');
 

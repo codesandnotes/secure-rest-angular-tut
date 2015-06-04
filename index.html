@@ -6,14 +6,13 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 
 		<title>secure-rest-angular-tut</title>
-
 	</head>
 
 	<body ng-controller="MainCtrl">
 
 		<h3>Login</h3>
-		<input ng-model="login.username" placeholder="username">
-		<input ng-model="login.password" placeholder="password">
+		<input ng-model="credentials.username" placeholder="username">
+		<input ng-model="credentials.password" placeholder="password">
 		<button ng-click="login()">Login!</button><button ng-click="logout()">Logout...</button><br/>
 		<br/>
 
@@ -39,6 +38,7 @@
 		<script src="app/main.js" type="application/javascript"></script>
 		<script src="app/main-controller.js" type="application/javascript"></script>
 		<script src="app/cookies-service.js" type="application/javascript"></script>
+		<script src="app/csrf-service.js" type="application/javascript"></script>
 		<script src="app/login-service.js" type="application/javascript"></script>
 	</body>
 </html>
