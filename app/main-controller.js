@@ -52,7 +52,7 @@ angular.module('secure-rest-angular-tut').controller('MainCtrl', function ($cook
 
 	$scope.logout = function() {
 		Login.logout(function (data, status, headers, config) {
-			// Success handler TODO: if we comment this, we could check if the user correctly logged out of the server
+			// Success handler
 			$scope.credentials = {username: '', password: ''};
 			delete $cookies['JSESSIONID'];
 			console.info('The user has been logged out!');
