@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('secure-rest-angular-tut').controller('MainCtrl', function ($cookies, $http, $location, $resource, $scope, Cookies, Login) {
+angular.module('secure-rest-angular-tut').controller('MainCtrl', function ($cookies, $http, $location, $q, $resource, $scope, Cookies, Csrf, Login) {
 
 	$scope.greetings = {
 		open: {
@@ -76,56 +76,36 @@ angular.module('secure-rest-angular-tut').controller('MainCtrl', function ($cook
 	$scope.getSecureGreetings = function() {
 		$scope.greetings.secure.getResult = '';
 
-		secureResources().options().$promise.then(function (response) {
-			console.log('Obtained a CSRF token in a cookie', response);
-
-			// Extract the CSRF token
-			var csrfToken = Cookies.getFromDocument($http.defaults.xsrfCookieName);
-			console.log('Extracted the CSRF token from the cookie', csrfToken);
-
-			// Add CSRF to headers
-			var headers = $http.defaults.headers.post;
-			headers[$http.defaults.xsrfHeaderName] = csrfToken;
-
+		Csrf.addResourcesCsrfToHeaders(secureResources().options, $http.defaults.headers.get).then(function (headers) {
 			secureResources(headers).get().$promise.then(function (response) {
 				console.log('GET /rest/secure returned: ', response);
 				$scope.greetings.secure.getResult = response.greetings;
 
 			}).catch(function(response) {
-				if (response.status === 401) {
-					console.error('You need to login first!');
-
-				} else {
-					console.error('Something went wrong...', response);
-				}
+				handleError(response);
 			});
 		});
 	};
 
 	$scope.postSecureGreetings = function () {
-		secureResources().options().$promise.then(function (response) {
-			console.log('Obtained a CSRF token in a cookie', response);
-
-			// Extract the CSRF token
-			var csrfToken = Cookies.getFromDocument($http.defaults.xsrfCookieName);
-			console.log('Extracted the CSRF token from the cookie', csrfToken);
-
-			// Add CSRF to headers
-			var headers = $http.defaults.headers.post;
-			headers[$http.defaults.xsrfHeaderName] = csrfToken;
-
+		Csrf.addResourcesCsrfToHeaders(secureResources().options, $http.defaults.headers.post).then(function (headers) {
 			secureResources(headers).post({greetings: $scope.greetings.secure.postValue}).$promise.then(function (response) {
 				console.log('POST /rest/secure returned: ', response);
 				console.info('You might want to check the server logs to see that the POST has been handled!');
 
 			}).catch(function(response) {
-				if (response.status === 401) {
-					console.error('You need to login first!');
-
-				} else {
-					console.error('Something went wrong...', response);
-				}
+				handleError(response);
 			});
 		});
+	};
+
+	var handleError = function(response) {
+
+		if (response.status === 401) {
+			console.error('You need to login first!');
+
+		} else {
+			console.error('Something went wrong...', response);
+		}
 	};
 });
