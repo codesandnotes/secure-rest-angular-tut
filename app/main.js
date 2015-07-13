@@ -3,7 +3,6 @@
 angular.module('secure-rest-angular-tut', [
 	'ngCookies',
 	'ngResource'
-	//'ngRoute'
 ]);
 
 angular.module('secure-rest-angular-tut').config(['$httpProvider', function ($httpProvider) {
