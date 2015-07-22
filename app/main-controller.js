@@ -66,24 +66,27 @@ angular.module('secure-rest-angular-tut').controller('MainCtrl', function ($cook
 	};
 
 	var secureResources = function (headers) {
-		return $resource('http://localhost:8081/rest/secure', {}, {
-			get: {method: 'GET', cache: false, headers: headers, isArray: false},
-			options: {method: 'OPTIONS', cache: false},
-			post: {method: 'POST', headers: headers, isArray: false}
-		});
+		if (headers !== undefined) {
+			return $resource('http://localhost:8081/rest/secure', {}, {
+				post: {method: 'POST', headers: headers, isArray: false}
+			});
+		} else {
+			return $resource('http://localhost:8081/rest/secure', {}, {
+				get: {method: 'GET', cache: false, isArray: false},
+				options: {method: 'OPTIONS', cache: false}
+			});
+		}
 	};
 
 	$scope.getSecureGreetings = function() {
 		$scope.greetings.secure.getResult = '';
 
-		Csrf.addResourcesCsrfToHeaders(secureResources().options, $http.defaults.headers.get).then(function (headers) {
-			secureResources(headers).get().$promise.then(function (response) {
-				console.log('GET /rest/secure returned: ', response);
-				$scope.greetings.secure.getResult = response.greetings;
+		secureResources().get().$promise.then(function (response) {
+			console.log('GET /rest/secure returned: ', response);
+			$scope.greetings.secure.getResult = response.greetings;
 
-			}).catch(function(response) {
-				handleError(response);
-			});
+		}).catch(function(response) {
+			handleError(response);
 		});
 	};
 
